@@ -1,5 +1,52 @@
+* {
+  margin: 1% 3% 1% 3%;
+  padding: 0;
+}
+
+div.container {
+  border-radius: 24px;
+  text-align: center;
+  margin: auto;
+  padding: 10pt;
+  background-image: linear-gradient(267.45deg, rgb(5, 213, 255) -34.23%, rgb(85, 51, 255) 99.39%);
+}
+
+div.mb-3 {
+  text-align: center;
+  gap: 50px;
+  align-self: center;
+  align-items: center;
+  margin: auto;
+  font-size: xx-large;
+  color: #ffffff;
+}
+
+div.card-header {
+  text-align: center;
+  margin: 15pt 0pt;
+  font-size: xx-large;
+  color: #ffffff;
+}
+
+img {
+  height: 100px;
+  width: 100px;
+}
+
+img.rounded::before {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 16px 20px;
+  margin: 10pt 10pt;
+}
+
+div.card {
+  text-align: center;
+  margin: auto;
+  font-size: large;
+  color: #ffffff;
+}
+
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -10,4 +57,79 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+h1 {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color:  rgb(22, 46, 133);
+  font-size: 80pt;
+}
+
+h2 {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color:  rgb(22, 46, 133);
+  font-size: x-large;
+}
+
+.nft {
+  margin-left: auto;
+}
+
+.nft-head {
+  font-size: large;
+  font-weight: 800;
+  color: #7b0066;
+  text-align: center;
+}
+
+p.text-center {
+  font-size: medium;
+  color:rgb(225, 225, 225);
+}
+
+row.player-stats {
+  justify-content: center;
+
+}
+
+row.nft {
+  justify-content: center;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+  font-size: large;
+  color: rgba(255, 255, 255, 0.221);
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  outline: none;
+  transition: all 300ms ease-in-out 0s;
+}
+
+button.mt-3 {
+  margin: 20pt auto;
+}
+
+button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 16px 20px;
+  outline: none;
+  transition: all 300ms ease-in-out 0s;
+}
+
+input.form-control {
+  margin: 10pt 0pt;
+  padding: 8pt;
+  font-size: x-large;
+  color: rgb(22, 46, 133);
 }
