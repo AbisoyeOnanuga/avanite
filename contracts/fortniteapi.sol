@@ -17,16 +17,6 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   bytes public s_lastResponse;
   bytes public s_lastError;
 
-    // Define a struct to store the Fortnite stats
-    struct Stats {
-    bytes32 id;
-    bytes32 image;
-    uint256 score;
-    uint256 kills;
-    uint256 kd;
-    uint256 winrate;
-    }
-
   constructor(address router, bytes32 _donId) FunctionsClient(router) ConfirmedOwner(msg.sender) {
     donId = _donId;
   }
@@ -78,23 +68,31 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
    * @param err Aggregated error from the user code or from the execution pipeline
    * Either response or error parameter will be set, but never both
    */
-    // Define a mapping to store the stats by request ID
-    mapping(bytes32 => Stats) public stats; 
-    // Function to fulfill the request by the Chainlink node
-    function fulfillRequest(
-    bytes32 requestId,
-    bytes32 id,
-    bytes32 image,
-    uint256 score,
-    uint256 kills,
-    uint256 kd,
-    uint256 winrate
+     function fulfillRequest(
+      bytes32 requestId,
+      bytes calldata response,
+      bytes calldata err
     ) internal override {
-    // Store the stats in the mapping
-    stats[requestId] = Stats(id, image, score, kills, kd, winrate);
+      // Call the super function to validate the request and emit the event
+      super.fulfillRequest(requestId, response, err);
+
+    // Parse and decode the response data as a JSON object
+    FunctionsResponse.Response memory res = response.parseResponse();
 
     // Store the latest result/error
-    s_lastResponse = abi.encodePacked(id, image, score, kills, kd, winrate);
-    s_lastError = "";
+    if (res.success) {
+      // Access the response properties as JSON values
+      bytes32 id = res.get("id").asBytes32();
+      bytes32 image = res.get("image").asBytes32();
+      uint256 score = res.get("score").asUint256();
+      uint256 kills = res.get("kills").asUint256();
+      uint256 kd = res.get("kd").asUint256();
+      uint256 winrate = res.get("winrate").asUint256();
+
+      // Store the latest result/error
+      s_lastResponse = abi.encodePacked(id, image, score, kills, kd, winrate);
+    } else {
+      s_lastError = err;
     }
+  }
 }
