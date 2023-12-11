@@ -1,0 +1,150 @@
+{
+    "name": "Fortnite Stats",
+    "initiators": [
+      {
+        "type": "runlog",
+        "params": {
+          "address": "${env:ORACLE_ADDRESS}"
+        }
+      }
+    ],
+    "tasks": [
+      {
+        "type": "httpget",
+        "params": {
+          "get": "https://fortnite-api.com/v2/stats/br/v2",
+          "headers": {
+            "x-api-key": "${env:FORTNITE_API_KEY}"
+          }
+        }
+      },
+      {
+        "type": "jsonparse",
+        "params": {
+          "path": [
+            "data",
+            "account",
+            "id"
+          ]
+        }
+      },
+      {
+        "type": "copy",
+        "params": {
+          "copyPath": [
+            "result"
+          ]
+        }
+      },
+      {
+        "type": "jsonparse",
+        "params": {
+          "path": [
+            "data",
+            "image"
+          ]
+        }
+      },
+      {
+        "type": "copy",
+        "params": {
+          "copyPath": [
+            "result"
+          ]
+        }
+      },
+      {
+        "type": "jsonparse",
+        "params": {
+          "path": [
+            "data",
+            "stats",
+            "all",
+            "overall",
+            "score"
+          ]
+        }
+      },
+      {
+        "type": "copy",
+        "params": {
+          "copyPath": [
+            "result"
+          ]
+        }
+      },
+      {
+        "type": "jsonparse",
+        "params": {
+          "path": [
+            "data",
+            "stats",
+            "all",
+            "overall",
+            "kills"
+          ]
+        }
+      },
+      {
+        "type": "copy",
+        "params": {
+          "copyPath": [
+            "result"
+          ]
+        }
+      },
+      {
+        "type": "jsonparse",
+        "params": {
+          "path": [
+            "data",
+            "stats",
+            "all",
+            "overall",
+            "kd"
+          ]
+        }
+      },
+      {
+        "type": "copy",
+        "params": {
+          "copyPath": [
+            "result"
+          ]
+        }
+      },
+      {
+        "type": "jsonparse",
+        "params": {
+          "path": [
+            "data",
+            "stats",
+            "all",
+            "overall",
+            "winRate"
+          ]
+        }
+      },
+      {
+        "type": "ethbytes32array",
+        "params": {
+          "signatures": [
+            "bytes32",
+            "bytes32",
+            "uint256",
+            "uint256",
+            "uint256",
+            "uint256"
+          ]
+        }
+      },
+      {
+        "type": "ethtx",
+        "params": {
+          "address": "${env:REACT_APP_CONTRACT_ADDRESS}",
+          "functionSelector": "fulfill(bytes32,bytes32,bytes32,uint256,uint256,uint256,uint256)"
+        }
+      }
+    ]
+  }
+  

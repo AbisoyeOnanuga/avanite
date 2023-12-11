@@ -1,17 +1,17 @@
+import React, { useState, useEffect } from "react";
+import Web3 from "web3";
+import FortniteStats from "./FortniteStats.json"; // Import the smart contract ABI
+
+// Define the smart contract address
+const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace this with your smart contract address
+
+// Define the web3 instance
+let web3;
+
+// Define the contract instance
+let contract;
 import React, { useEffect, useState } from "react";
-// import web3 and contract
-//import web3 from "./web3";
-import contract from "./contract";
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  Card,
-  Image,
-} from "react-bootstrap";
-import { FaEthereum } from "react-icons/fa";
+
 /*
 // import the dotenv module
 const dotenv = require("dotenv");
@@ -25,232 +25,126 @@ import contractABI from "../contract-abi.json";
 import contractAddress from "../contract-address.json";
 */
 
-
 function App() {
+  // Define the state variables
+  const [account, setAccount] = useState(""); // The user's account address
+  const [name, setName] = useState(""); // The Fortnite username
+  const [requestId, setRequestId] = useState(""); // The request ID
+  const [stats, setStats] = useState(null); // The Fortnite stats
+  const [loading, setLoading] = useState(false); // The loading indicator
 
-  /*
-  // define your state variables
-  const [account, setAccount] = useState("");
-  const [username, setUsername] = useState("");
-  const [nft, setNft] = useState(null);
-  const [loading, setLoading] = useState(false);
-  
-  // define your functions
-  const getAccount = async () => {
-    // get the user's MetaMask account
-    const accounts = await alch.core.getAccounts();
-    if (accounts.length > 0) {
-      setAccount(accounts[0]);
-    } else {
-      alert("Please connect to MetaMask");
-    }
-  };
-
-  const getFeedback = async (event) => {
-    // prevent the default form submission behavior
-    event.preventDefault();
-    // check if the user has entered a username
-    if (username) {
-      // set the loading state to true
-      setLoading(true);
-      try {
-        // create a contract instance using alchemy-web3
-        const contract = new alch.core.Contract(contractABI, contractAddress);
-        // get the NFT id for the username from the smart contract
-        const nftId = await contract
-          .getNftId(username)
-          .call({ from: account });
-        // check if the NFT id is valid
-        if (nftId > 0) {
-          // get the NFT data from the smart contract
-          const nftData = await contract
-            .getNftData(nftId)
-            .call({ from: account });
-          // set the NFT state with the data
-          setNft({
-            id: nftId,
-            title: nftData.title,
-            description: nftData.description,
-            image: nftData.image,
-            fee: nftData.fee,
-          });
-        } else {
-          // create a new NFT for the username using the Chainlink Function
-          const response = await fetch(
-            "https://api.chain.link/v2/functions/<your-function-id>/runs",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-Chainlink-EA-AccessKey": "<your-access-key>",
-                "X-Chainlink-EA-Secret": "<your-secret>",
-              },
-              body: JSON.stringify({
-                jobRun: {
-                  data: {
-                    username: username,
-                  },
-                },
-              }),
-            }
-          );
-          // check if the response is successful
-          if (response.ok) {
-            // get the response data
-            const data = await response.json();
-            // get the NFT id from the data
-            const nftId = data.data.result;
-            // get the NFT data from the smart contract
-            const nftData = await contract
-              .getNftData(nftId)
-              .call({ from: account });
-            // set the NFT state with the data
-            setNft({
-              id: nftId,
-              title: nftData.title,
-              description: nftData.description,
-              image: nftData.image,
-              fee: nftData.fee,
-            });
-          } else {
-            // handle the error
-            alert("Something went wrong");
-          }
-        }
-      } catch (error) {
-        // handle the error
-        console.error(error);
-        alert("Something went wrong");
-      }
-      // set the loading state to false
-      setLoading(false);
-    } else {
-      // handle the empty input
-      alert("Please enter a username");
-    }
-  };
-
-  const updateFeedback = async () => {
-    // check if the user has an NFT
-    if (nft) {
-      // set the loading state to true
-      setLoading(true);
-      try {
-        // update the NFT feedback using the Chainlink Function
-        const response = await fetch(
-          "https://api.chain.link/v2/functions/<your-function-id>/runs",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Chainlink-EA-AccessKey": "<your-access-key>",
-              "X-Chainlink-EA-Secret": "<your-secret>",
-            },
-            body: JSON.stringify({
-              jobRun: {
-                data: {
-                  username: username,
-                },
-              },
-            }),
-          }
-        );
-        // check if the response is successful
-        if (response.ok) {
-          // get the response data
-          const data = await response.json();
-          // get the NFT id from the data
-          const nftId = data.data.result;
-          // get the NFT data from the smart contract
-          const nftData = await contract
-            .getNftData(nftId)
-            .call({ from: account });
-          // set the NFT state with the updated data
-          setNft({
-            id: nftId,
-            title: nftData.title,
-            description: nftData.description,
-            image: nftData.image,
-            fee: nftData.fee,
-          });
-        } else {
-          // handle the error
-          alert("Something went wrong");
-        }
-      } catch (error) {
-        // handle the error
-        console.error(error);
-        alert("Something went wrong");
-      }
-      // set the loading state to false
-      setLoading(false);
-    } else {
-      // handle the case when the user does not have an NFT
-      alert("You do not have an NFT to update");
-    }
-  };
-
-  // use the useEffect hook to get the account and the NFT on mount
+  // Define the useEffect hook to load the web3 and contract instances
   useEffect(() => {
-    getAccount();
-    getFeedback();
+    async function loadWeb3AndContract() {
+      // Check if Metamask is installed
+      if (window.ethereum) {
+        // Create a new web3 instance
+        web3 = new Web3(window.ethereum);
+
+        // Request access to the user's account
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+
+        // Get the user's account address
+        const accounts = await web3.eth.getAccounts();
+        setAccount(accounts[0]);
+
+        // Create a new contract instance
+        contract = new web3.eth.Contract(FortniteStats.abi, CONTRACT_ADDRESS);
+
+        // Listen for the RequestMade event
+        contract.events.RequestMade().on("data", (event) => {
+          // Set the request ID
+          setRequestId(event.returnValues.requestId);
+        });
+
+        // Listen for the RequestFulfilled event
+        contract.events.RequestFulfilled().on("data", async (event) => {
+          // Check if the request ID matches
+          if (event.returnValues.requestId === requestId) {
+            // Get the stats from the contract
+            const stats = await contract.methods
+              .getStats(requestId)
+              .call({ from: account });
+
+            // Convert the stats to a readable format
+            const formattedStats = {
+              id: web3.utils.toAscii(stats.id),
+              image: web3.utils.toAscii(stats.image),
+              score: stats.score.toString(),
+              kills: stats.kills.toString(),
+              kd: stats.kd.toString(),
+              winrate: stats.winrate.toString(),
+            };
+
+            // Set the stats
+            setStats(formattedStats);
+
+            // Reset the loading indicator
+            setLoading(false);
+          }
+        });
+      } else {
+        // Alert the user to install Metamask
+        alert("Please install Metamask to use this app");
+      }
+    }
+
+    // Call the loadWeb3AndContract function
+    loadWeb3AndContract();
   }, []);
-  */
+
+  // Define the handleChange function to handle the input change
+  function handleChange(event) {
+    // Set the name state
+    setName(event.target.value);
+  }
+
+  // Define the handleSubmit function to handle the form submission
+  async function handleSubmit(event) {
+    // Prevent the default behavior
+    event.preventDefault();
+
+    // Check if the name is not empty
+    if (name) {
+      // Set the loading indicator
+      setLoading(true);
+
+      // Make a request to the contract
+      await contract.methods
+        .requestStats(name)
+        .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
+    } else {
+      // Alert the user to enter a name
+      alert("Please enter a Fortnite username");
+    }
+  }
+
+  // Return the JSX elements
   return (
-    <Container>
-      <Row className="justify-content-md-center">
-        <Col md="auto">
-          <h1 className="text-center">Fortnite Stats Feedback</h1>
-          <p className="text-center">
-            A dApp that generates dynamic NFTs based on your Fortnite stats and
-            feedback
-          </p>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col md="auto">
-          <Form>
-            <Form.Group className="mb-3" controlId="formUsername">
-              <Form.Label>Enter your Fortnite username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter username"
-                // add your event handlers here
-                // ...
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Get Feedback
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col md="auto">
-          <Card style={{ width: "18rem" }}>
-            <Card.Header>Your Dynamic NFT</Card.Header>
-            <Card.Body>
-              <Card.Title>{/* display your NFT title here */}</Card.Title>
-              <Card.Text>{/* display your NFT description here */}</Card.Text>
-              <Image
-                //src={ /*display your NFT image here*/ }
-                alt="NFT image"
-                rounded
-              />
-              <Button variant="success" className="mt-3">
-                Update Feedback
-              </Button>
-              <Button variant="danger" className="mt-3 ms-3">
-                Delete NFT
-              </Button>
-            </Card.Body>
-            <Card.Footer>
-              <FaEthereum /> {/* display your subscription fee here */}
-            </Card.Footer>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <div className="App">
+      <h1>Fortnite Stats</h1>
+      <p>Enter your Fortnite username and see your stats</p>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={name}
+          onChange={handleChange}
+          placeholder="Enter your Fortnite username"
+        />
+        <button type="submit">Submit</button>
+      </form>
+      {loading && <p>Loading...</p>}
+      {stats && (
+        <div className="stats">
+          <p>ID: {stats.id}</p>
+          <p>Image: {stats.image}</p>
+          <p>Score: {stats.score}</p>
+          <p>Kills: {stats.kills}</p>
+          <p>K/D: {stats.kd}</p>
+          <p>Win Rate: {stats.winrate}</p>
+        </div>
+      )}
+    </div>
   );
 }
 
