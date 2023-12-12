@@ -22,7 +22,7 @@ const encryptAndUploadSecrets = async () => {
 
   await secretsManager.initialize();
 
-  if (!process.env.GPT_API_KEY) {
+  if (!process.env.FORTNITE_API_KEY) {
     throw Error("FORTNITE_API_KEY not found in .env.enc file");
   }
 

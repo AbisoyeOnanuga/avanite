@@ -2,7 +2,7 @@
 const username = request.params.username;
 
 // Get the API key from the secrets object
-const apiKey = secrets.API_KEY;
+const apiKey = `${secrets.API_KEY}`;
 
 // Check if the username and API key are valid
 if (!username || !apiKey) {
@@ -40,7 +40,7 @@ const account = data.data.account;
 const stats = data.data.stats;
 
 const id = account.id;
-const name = account.name;
+const user = account.name;
 const image = account.image;
 const score = stats.all.overall.score;
 const kills = stats.all.overall.kills;
@@ -50,7 +50,7 @@ const winRate = stats.all.overall.winRate;
 // Return the attributes as an object
 return {
   id: id,
-  name: name,
+  name: user,
   image: image,
   score: score,
   kills: kills,
