@@ -4,12 +4,12 @@ const { utils } = require("ethers");
 const { signer } = require("../connection");
 const { networks } = require("../networks");
 
-const NETWORK = "polygonMumbai";
+const NETWORK = "avalancheFuji";
 
 const functionsRouterAddress = networks[NETWORK].functionsRouter;
 const linkTokenAddress = networks[NETWORK].linkToken;
-const consumerAddress = "0x01568F134A64b8c525E468908a3850B6c6A55F54";
-const LINK_AMOUNT = "3.3"
+const consumerAddress = "0x78fcba4d007c648e1e4a681e371a0549515753f6";
+const LINK_AMOUNT = "5"
 
 const createAndFundSub = async () => {
   const subscriptionManager = new SubscriptionManager({
