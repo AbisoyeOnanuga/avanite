@@ -12,6 +12,7 @@ const consumerAddress = "0x78fcba4d007c648e1e4a681e371a0549515753f6";
 const subscriptionId = "1880";
 const encryptedSecretsRef = "0xa266736c6f744964006776657273696f6e1a6577cb6a";
 
+/*
 const sendRequest = async () => {
   if (!consumerAddress || !encryptedSecretsRef || !subscriptionId) {
     throw Error("Missing required environment variables.");
@@ -42,6 +43,11 @@ const sendRequest = async () => {
   console.log(
     `\nRequest made.  Request Id is ${requestId}. TxHash is ${requestTx.hash}`
   );
+};
+*/
+// Define the sendRequest function with a prompt parameter
+const sendRequest = async (prompt) => {
+  // The rest of the code goes here
 };
 
 sendRequest().catch(err => {
