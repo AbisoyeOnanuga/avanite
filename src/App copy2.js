@@ -3,7 +3,7 @@ import Web3 from "web3";
 import FortniteStats from "./FortniteStats.json"; // Import the smart contract ABI
 
 // Define the smart contract address
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace this with your smart contract address
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS; // Replace this with your smart contract address
 
 // Define the web3 instance
 let web3;

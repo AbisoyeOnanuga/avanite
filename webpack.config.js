@@ -9,8 +9,21 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
   },
   // specify the loaders for different file types
+  resolve: {
+    // ...
+    alias: {
+      // ...
+      child_process: require.resolve("child_process"),
+    },
+  },
   module: {
     rules: [
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       // use babel-loader to transpile JavaScript files
       {
         test: /\.js$/,
@@ -36,4 +49,25 @@ module.exports = {
       template: "./src/index.html",
     }),
   ],
+};
+module.exports = {
+  // ...
+  resolve: {
+    // ...
+    alias: {
+      // ...
+      child_process: require.resolve("child_process"),
+    },
+  },
+  module: {
+    rules: [
+      // ...
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
+    ],
+  },
 };

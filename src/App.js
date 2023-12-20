@@ -13,9 +13,38 @@ import {
 } from "react-bootstrap";
 import { FaEthereum } from "react-icons/fa";
 
+import Web3 from 'web3';
+import { sendRequest } from './scripts/04_request.js';
+
+// Initialize web3 and get the current account
+const web3 = new Web3(Web3.givenProvider); // Connect to the provider (e.g. MetaMask)
+const account = await web3.eth.getAccounts()[0]; // Get the current account from the provider
+
 function App() {
   // define your state variables and functions here
+  // Define a state variable for the prompt
+  const [prompt, setPrompt] = useState("");
   // ...
+  // Define a handler function for the form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      // Call the sendRequest script with the prompt as an argument
+      const requestId = await sendRequest(prompt);
+      // Display a success message with the request ID
+      alert(`Request sent successfully! Request ID: ${requestId}`);
+    } catch (error) {
+      // Display an error message
+      alert(error.message);
+    }
+  };
+
+  // Define a handler function for the input change
+  const handleChange = (event) => {
+    // Set the state variable to the input value
+    setPrompt(event.target.value);
+  };
+
 
   return (
     <Container>
@@ -29,7 +58,7 @@ function App() {
       </Row>
       <Row class="player-stats" className="justify-content-md-center">
         <Col md="auto">
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formUsername">
               <Form.Label>Enter your Fortnite username</Form.Label>
               <Form.Control
@@ -37,6 +66,8 @@ function App() {
                 placeholder="Enter username"
                 // add your event handlers here
                 // ...
+                value={prompt} 
+                onChange={handleChange}
               />
             </Form.Group>
             <Button variant="primary" type="submit">

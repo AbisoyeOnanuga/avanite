@@ -1,5 +1,5 @@
 const { Contract } = require("ethers");
-const fs = require("fs");
+import * as fs from 'browserify-fs';
 const path = require("path");
 const { Location } = require("@chainlink/functions-toolkit");
 require("@chainlink/env-enc").config();
@@ -46,7 +46,7 @@ const sendRequest = async () => {
 };
 */
 // Define the sendRequest function with a prompt parameter
-const sendRequest = async (prompt) => {
+export const sendRequest = async (prompt) => {
   // The rest of the code goes here
 };
 
